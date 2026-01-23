@@ -9,7 +9,7 @@ jobs:
     vars: inherit
   snyk:
     needs:
-      - test
+      - tests
     uses: ./.cloudbees/workflows/snyk.yaml
     vars: inherit
     secrets: inherit
