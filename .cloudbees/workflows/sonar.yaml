@@ -1,0 +1,22 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: sonar
+on:
+  workflow_dispatch:
+  workflow_call:
+jobs:
+  sonar:
+    steps:
+      - uses: cloudbees-io/checkout@v2
+        name: Get source code
+
+      - name: Run sonar scan
+        id: sonar-scan
+        uses: docker://cloudbeesdemo/pyexamples-scripts:latest
+        env:
+          SONAR_HOST_URL: "${{ vars.SONAR_URL }}"
+          SONAR_TOKEN: "${{ secrets.SONAR_TOKEN }}"
+          PROJECT_KEY: "PYEXAMPLES"
+          BRANCH: ${{ cloudbees.scm.branch }}
+        run: |
+          ./scripts/sonar.sh
