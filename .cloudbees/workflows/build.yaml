@@ -57,10 +57,10 @@ jobs:
         run: |
           snyk container test \
             --org=${{ vars.SNYK_ORG }} \
-            # --severity-threshold=high \
             --file=Dockerfile \
             docker-archive:image.tar
 
+      # --severity-threshold=high \
       # Upload to ASPM
       - id: upload-binary
         name: Upload binary using action
