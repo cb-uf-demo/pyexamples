@@ -45,7 +45,7 @@ jobs:
         uses: docker://alpine:latest
         run: |
           DIGEST=$(cat "$CLOUDBEES_WORKSPACE/digest.txt")
-          echo "IMAGE_DIGEST=$DIGEST" >> "$CLOUDBEES_OUTPUTS"
+          echo "$DIGEST" > "$CLOUDBEES_OUTPUTS/IMAGE_DIGEST"
 
       # Scan it
       # - name: Scan with Snyk Container
