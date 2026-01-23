@@ -18,18 +18,20 @@ jobs:
           password: ${{ secrets.OCI_PASSWORD }}
 
       # Build image (tar file)
-      - name: Build container image
-        uses: docker://bitnami/kaniko:latest
+      - name: Build image
+        uses: docker://quay.io/buildah/stable:latest
         kind: build
         id: build-image
         run: |
-          /kaniko/executor \
-            --context "$CLOUDBEES_WORKSPACE" \
-            --dockerfile Dockerfile \
-            --no-push \
-            --tar-path "$CLOUDBEES_WORKSPACE/image.tar" \
-            --destination "pyexamples:${{ cloudbees.scm.sha }}"
+          buildah bud \
+            --storage-driver=vfs \
+            --tag "pyexamples:${{ cloudbees.scm.sha }}" \
+            "$CLOUDBEES_WORKSPACE"
 
+          buildah push \
+            --storage-driver=vfs \
+            "pyexamples:${{ cloudbees.scm.sha }}" \
+            "oci-archive:$CLOUDBEES_WORKSPACE/image.tar"
       # Scan it
       # Upload to ASPM
       # Gate it
