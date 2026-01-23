@@ -22,7 +22,7 @@ jobs:
         id: build-image
         kind: build
         with:
-          destination: ${{ vars.OCI_REGISTRY }}/pyexamples:${{ cloudbees.scm.sha }}
+          destination: ${{ vars.OCI_REGISTRY }}/${{ secrets.OCI_USERNAME }}/pyexamples:${{ cloudbees.scm.sha }}
           tar-path: container-image.tar
           build-args: BUILDKIT_CONTEXT_KEEP_GIT_DIR=1,BUILDKIT_INLINE_CACHE=1
           artifact-name: pyexample
