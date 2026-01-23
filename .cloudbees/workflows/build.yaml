@@ -18,17 +18,21 @@ jobs:
           password: ${{ secrets.OCI_PASSWORD }}
 
       # Build image (tar file)
-      - uses: https://github.com/cloudbees-io/kaniko@v1
-        name: Build container image
-        id: build-image
+      - name: Build container image
+        uses: docker://cgr.dev/chainguard/kaniko:latest-dev
         kind: build
-        with:
-          destination: ${{ secrets.OCI_USERNAME }}/pyexamples:${{ cloudbees.scm.sha }}
-          tar-path: container-image.tar
-          build-args: BUILDKIT_CONTEXT_KEEP_GIT_DIR=1,BUILDKIT_INLINE_CACHE=1
-          artifact-name: pyexample
-      # Register build artifact
+        id: build-image
+        run: |
+          /kaniko/executor \
+            --context "$CLOUDBEES_WORKSPACE" \
+            --dockerfile Dockerfile \
+            --no-push \
+            --tar-path "$CLOUDBEES_WORKSPACE/image.tar" \
+            --destination "pyexamples:${{ cloudbees.scm.sha }}"
+
       # Scan it
       # Upload to ASPM
       # Gate it
       # Push it
+
+      # Register build artifact
