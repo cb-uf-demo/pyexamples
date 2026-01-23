@@ -17,6 +17,6 @@ jobs:
           SONAR_HOST_URL: "${{ vars.SONAR_URL }}"
           SONAR_TOKEN: "${{ secrets.SONAR_TOKEN }}"
           PROJECT_KEY: "PYEXAMPLES"
-          BRANCH: ${{ cloudbees.scm.branch }}
+          # BRANCH: ${{ cloudbees.scm.branch }}
         run: |
           ./scripts/sonar.sh
