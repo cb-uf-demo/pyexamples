@@ -1,0 +1,36 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: test
+on:
+  workflow_dispatch:
+  workflow_call:
+jobs:
+  test:
+    steps:
+      - uses: cloudbees-io/checkout@v1
+        name: Get source code
+
+      - name: Run unit tests
+        id: unit-tests
+        uses: docker://python:3.13
+        kind: test
+        run: |
+          pip install poetry
+          poetry install --with dev
+          poetry run pytest --junitxml=test-results.xml --cov=app --cov-report=markdown --cov-report=term
+          cat coverage.md > "$CLOUDBEES_OUTPUTS/CODE_COVERAGE"
+
+      - name: Publish test results
+        uses: cloudbees-io/publish-test-results@v2
+        with:
+          test-type: JUNIT
+          results-path: ${{ cloudbees.workspace }}/test-results.xml
+
+      - name: Publish evidence
+        uses: cloudbees-io/publish-evidence-item@v1
+        with:
+          content: |-
+            ## Test code coverage
+
+            ${{ steps.unit-tests.outputs.CODE_COVERAGE }}
+          format: MARKDOWN
