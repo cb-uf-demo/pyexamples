@@ -43,6 +43,7 @@ jobs:
 
       - name: Export Image Digest
         uses: docker://alpine:latest
+        id: image-digest
         run: |
           DIGEST=$(cat "$CLOUDBEES_WORKSPACE/digest.txt")
           echo "$DIGEST" > "$CLOUDBEES_OUTPUTS/IMAGE_DIGEST"
@@ -77,4 +78,4 @@ jobs:
           name: ${{ inputs.image-name }}
           url: docker.io/${{ secrets.OCI_USERNAME }}/${{ inputs.image-name }}:${{ cloudbees.scm.sha }}
           version: ${{ cloudbees.scm.sha }}
-          digest: ${{ steps.build-image.outputs.IMAGE_DIGEST }}
+          digest: ${{ steps.image-digest.outputs.IMAGE_DIGEST }}
