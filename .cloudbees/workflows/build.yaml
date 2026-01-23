@@ -37,7 +37,7 @@ jobs:
             --context "$CLOUDBEES_WORKSPACE" \
             --dockerfile Dockerfile \
             --no-push \
-            --tar-path "$CLOUDBEES_WORKSPACE/image.tar" \
+            --tar-path "image.tar" \
             --destination "${{ inputs.image-name }}:${{ cloudbees.scm.sha }}"
 
       # Scan it
@@ -53,14 +53,14 @@ jobs:
         name: Upload binary using action
         uses: https://github.com/cloudbees-io/asset-chain-utils/upload-binary@v1
         with:
-          file-path: "$CLOUDBEES_WORKSPACE/image.tar"
+          file-path: "image.tar"
           file-type: BINARY_CONTAINER
       # Gate it
       # Push it
       - name: Push image to registry
         uses: docker://gcr.io/go-containerregistry/crane:debug
         run: |
-          crane push "$CLOUDBEES_WORKSPACE/image.tar" "index.docker.io/${{ secrets.OCI_USERNAME }}/${{ inputs.image-name }}:${{ cloudbees.scm.sha }}"
+          crane push "image.tar" "index.docker.io/${{ secrets.OCI_USERNAME }}/${{ inputs.image-name }}:${{ cloudbees.scm.sha }}"
 
       # Register build artifact
       - name: Register an artifact with the platform
