@@ -7,7 +7,7 @@ on:
 jobs:
   test:
     steps:
-      - uses: cloudbees-io/checkout@v1
+      - uses: cloudbees-io/checkout@v2
         name: Get source code
 
       - name: Run unit tests

@@ -4,10 +4,14 @@ name: build
 on:
   workflow_dispatch:
   workflow_call:
+    image-name:
+      type: string
+      required: true
+      default: pyexamples
 jobs:
   build:
     steps:
-      - uses: cloudbees-io/checkout@v1
+      - uses: cloudbees-io/checkout@v2
         name: Get source code
 
       - name: Sign in to OCI registry
@@ -28,7 +32,7 @@ jobs:
             --dockerfile Dockerfile \
             --no-push \
             --tar-path "$CLOUDBEES_WORKSPACE/image.tar" \
-            --destination "pyexamples:${{ cloudbees.scm.sha }}"
+            --destination "${{ inputs.image-name }}:${{ cloudbees.scm.sha }}"
 
       # Scan it
       - name: Scan with Snyk Container
@@ -36,8 +40,8 @@ jobs:
         with:
           orgname: ${{ vars.SNYK_ORG }}
           token: ${{ secrets.SNYK_TOKEN }}
-          image-location: "$CLOUDBEES_WORKSPACE/image.tar"
-          image-tag: "pyexamples:${{ cloudbees.scm.sha }}"
+          image-location: "docker-archive:$CLOUDBEES_WORKSPACE/image.tar"
+          image-tag: "${{ inputs.image-name }}:${{ cloudbees.scm.sha }}"
       # Upload to ASPM
       # Gate it
       # Push it
