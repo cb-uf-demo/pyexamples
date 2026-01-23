@@ -41,6 +41,9 @@ jobs:
             --destination "${{ inputs.image-name }}:${{ cloudbees.scm.sha }}" \
             --digest-file "digest.txt"
 
+      - name: Export Image Digest
+        uses: docker://alpine:latest
+        run: |
           DIGEST=$(cat "$CLOUDBEES_WORKSPACE/digest.txt")
           echo "IMAGE_DIGEST=$DIGEST" >> "$CLOUDBEES_OUTPUTS"
 
