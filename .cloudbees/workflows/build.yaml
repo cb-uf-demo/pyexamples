@@ -23,7 +23,7 @@ jobs:
       - name: Sign in to OCI registry
         uses: https://github.com/cloudbees-io/configure-oci-credentials@v1
         with:
-          registry: https://index.docker.io/v1/
+          registry: ${{ vars.OCI_REGISTRY }}
           username: ${{ secrets.OCI_USERNAME }}
           password: ${{ secrets.OCI_PASSWORD }}
 
@@ -37,7 +37,7 @@ jobs:
             --context "$CLOUDBEES_WORKSPACE" \
             --dockerfile Dockerfile \
             --no-push \
-            --tar-path "image.tar" \
+            --tar-path "${{ inputs.image-name }}.tar" \
             --destination "${{ inputs.image-name }}:${{ cloudbees.scm.sha }}" \
             --digest-file "digest.txt"
 
@@ -57,23 +57,23 @@ jobs:
         run: |
           snyk container test \
             --org=${{ vars.SNYK_ORG }} \
+            --severity-threshold=high \
             --file=Dockerfile \
-            docker-archive:image.tar || true
+            docker-archive:${{ inputs.image-name }}.tar || true # Remove the || true for it to properly gate
 
-      # --severity-threshold=high \
       # Upload to ASPM
       - id: upload-binary
         name: Upload binary using action
         uses: https://github.com/cloudbees-io/asset-chain-utils/upload-binary@v1
         with:
-          file-path: "image.tar"
+          file-path: "${{ inputs.image-name }}.tar"
           file-type: BINARY_CONTAINER
 
       # Push it
       - name: Push image to registry
         uses: docker://gcr.io/go-containerregistry/crane:debug
         run: |
-          crane push "image.tar" "index.docker.io/${{ secrets.OCI_USERNAME }}/${{ inputs.image-name }}:${{ cloudbees.scm.sha }}"
+          crane push "${{ inputs.image-name }}.tar" "${{ vars.OCI_REGISTRY }}${{ secrets.OCI_USERNAME }}/${{ inputs.image-name }}:${{ cloudbees.scm.sha }}"
 
       # Register build artifact
       - name: Register an artifact with the platform
@@ -81,6 +81,6 @@ jobs:
         uses: cloudbees-io/register-build-artifact@v2
         with:
           name: ${{ inputs.image-name }}
-          url: docker.io/${{ secrets.OCI_USERNAME }}/${{ inputs.image-name }}:${{ cloudbees.scm.sha }}
+          url: ${{ vars.OCI_REGISTRY }}${{ secrets.OCI_USERNAME }}/${{ inputs.image-name }}:${{ cloudbees.scm.sha }}
           version: ${{ cloudbees.scm.sha }}
           digest: ${{ steps.image-digest.outputs.IMAGE_DIGEST }}
