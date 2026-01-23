@@ -1,0 +1,28 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: build
+on:
+  workflow_dispatch:
+  workflow_call:
+jobs:
+  build:
+    steps:
+      - uses: cloudbees-io/checkout@v1
+        name: Get source code
+
+      - name: Sign in to OCI registry
+        uses: https://github.com/cloudbees-io/configure-oci-credentials@v1
+        with:
+          registry: ${{ vars.OCI_REGISTRY }}
+          username: ${{ secrets.OCI_USERNAME }}
+          password: ${{ secrets.OCI_PASSWORD }}
+
+      - uses: https://github.com/cloudbees-io/kaniko@v1
+        name: Build container image
+        id: build-image
+        kind: build
+        with:
+          destination: ${{ vars.OCI_REGISTRY }}/pyexamples:${{ cloudbees.scm.sha }}
+          tar-path: container-image.tar
+          build-args: BUILDKIT_CONTEXT_KEEP_GIT_DIR=1,BUILDKIT_INLINE_CACHE=1
+          artifact-name: pyexample
