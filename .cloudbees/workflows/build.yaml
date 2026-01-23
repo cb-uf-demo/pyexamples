@@ -4,10 +4,11 @@ name: build
 on:
   workflow_dispatch:
   workflow_call:
-    image-name:
-      type: string
-      required: true
-      default: pyexamples
+    inputs:
+      image-name:
+        type: string
+        required: true
+        default: pyexamples
 jobs:
   build:
     steps:
