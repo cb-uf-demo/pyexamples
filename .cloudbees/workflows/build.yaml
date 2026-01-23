@@ -68,5 +68,5 @@ jobs:
         uses: cloudbees-io/register-build-artifact@v2
         with:
           name: ${{ inputs.image-name }}
-          url: docker.io/${{ OCI_USERNAME }}/${{ inputs.image-name }}:${{ cloudbees.scm.sha }}
+          url: docker.io/${{ secrets.OCI_USERNAME }}/${{ inputs.image-name }}:${{ cloudbees.scm.sha }}
           version: ${{ cloudbees.scm.sha }}
