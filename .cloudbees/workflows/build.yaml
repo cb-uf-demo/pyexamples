@@ -59,7 +59,6 @@ jobs:
       # Push it
       - name: Push image to registry
         uses: docker://gcr.io/go-containerregistry/crane:debug
-        kind: push
         run: |
           crane push "$CLOUDBEES_WORKSPACE/image.tar" "index.docker.io/${{ secrets.OCI_USERNAME }}/${{ inputs.image-name }}:${{ cloudbees.scm.sha }}"
 
