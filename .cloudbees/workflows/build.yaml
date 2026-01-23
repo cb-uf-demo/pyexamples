@@ -38,7 +38,11 @@ jobs:
             --dockerfile Dockerfile \
             --no-push \
             --tar-path "image.tar" \
-            --destination "${{ inputs.image-name }}:${{ cloudbees.scm.sha }}"
+            --destination "${{ inputs.image-name }}:${{ cloudbees.scm.sha }}" \
+            --digest-file "digest.txt"
+
+          DIGEST=$(cat "$CLOUDBEES_WORKSPACE/digest.txt")
+          echo "IMAGE_DIGEST=$DIGEST" >> "$CLOUDBEES_OUTPUTS"
 
       # Scan it
       # - name: Scan with Snyk Container
@@ -70,3 +74,4 @@ jobs:
           name: ${{ inputs.image-name }}
           url: docker.io/${{ secrets.OCI_USERNAME }}/${{ inputs.image-name }}:${{ cloudbees.scm.sha }}
           version: ${{ cloudbees.scm.sha }}
+          digest: ${{ steps.build-image.outputs.IMAGE_DIGEST }}
