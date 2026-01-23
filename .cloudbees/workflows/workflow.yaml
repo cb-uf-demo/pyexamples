@@ -26,3 +26,5 @@ jobs:
     uses: ./.cloudbees/workflows/build.yaml
     vars: inherit
     secrets: inherit
+    with:
+      image-name: pyexamples
