@@ -53,7 +53,7 @@ jobs:
         uses: docker://snyk/snyk:docker
         shell: sh
         env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_TOKEN: ${{ secrets.SNYK_SECRET }}
         run: |
           snyk container test \
             --org=${{ vars.SNYK_ORG }} \
