@@ -73,7 +73,7 @@ jobs:
       - name: Push image to registry
         uses: docker://gcr.io/go-containerregistry/crane:debug
         run: |
-          crane push "${{ inputs.image-name }}.tar" "${{ vars.OCI_REGISTRY }}${{ secrets.OCI_USERNAME }}/${{ inputs.image-name }}:${{ cloudbees.scm.sha }}"
+          crane push "${{ inputs.image-name }}.tar" "${{ secrets.OCI_USERNAME }}/${{ inputs.image-name }}:${{ cloudbees.scm.sha }}"
 
       # Register build artifact
       - name: Register an artifact with the platform
