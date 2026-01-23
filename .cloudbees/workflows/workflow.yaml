@@ -8,6 +8,6 @@ on:
   workflow_dispatch:
 jobs:
   tests:
-    uses: .cloudbees/workflows/test.yaml
+    uses: ./.cloudbees/workflows/test.yaml
     vars: inherit
     secrets: inherit
