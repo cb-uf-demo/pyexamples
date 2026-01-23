@@ -12,7 +12,7 @@ jobs:
 
       - name: Run sonar scan
         id: sonar-scan
-        uses: docker://cloudbeesdemo/pyexamples-scripts:latest
+        uses: docker://cloudbeesdemo/pyexamples-scripts:v2
         env:
           SONAR_HOST_URL: "${{ vars.SONAR_URL }}"
           SONAR_TOKEN: "${{ secrets.SONAR_TOKEN }}"

@@ -2,4 +2,5 @@ FROM alpine:latest
 
 WORKDIR /scripts
 
+RUN apk add --no-cache bash
 RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing sonar-scanner
