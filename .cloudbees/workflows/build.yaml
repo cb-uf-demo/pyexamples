@@ -19,7 +19,7 @@ jobs:
 
       # Build image (tar file)
       - name: Build container image
-        uses: docker://cgr.dev/chainguard/kaniko:latest-dev
+        uses: docker://bitnami/kaniko:latest
         kind: build
         id: build-image
         run: |
