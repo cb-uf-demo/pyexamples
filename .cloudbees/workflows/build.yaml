@@ -19,24 +19,25 @@ jobs:
 
       # Build image (tar file)
       - name: Build image
-        uses: docker://quay.io/buildah/stable:latest
+        uses: docker://gcr.io/kaniko-project/executor:v1.23.2-debug
         kind: build
         id: build-image
         run: |
-          export BUILDAH_ISOLATION=chroot
-          export STORAGE_DRIVER=vfs
+          /kaniko/executor \
+            --context "$CLOUDBEES_WORKSPACE" \
+            --dockerfile Dockerfile \
+            --no-push \
+            --tar-path "$CLOUDBEES_WORKSPACE/image.tar" \
+            --destination "pyexamples:${{ cloudbees.scm.sha }}"
 
-          buildah bud \
-            --isolation chroot \
-            --storage-driver vfs \
-            --tag "pyexamples:${{ cloudbees.scm.sha }}" \
-            "$CLOUDBEES_WORKSPACE"
-
-          buildah push \
-            --storage-driver vfs \
-            "pyexamples:${{ cloudbees.scm.sha }}" \
-            "oci-archive:$CLOUDBEES_WORKSPACE/image.tar"
       # Scan it
+      - name: Scan with Snyk Container
+        uses: cloudbees-io/snyk-scan-container@v1
+        with:
+          orgname: ${{ vars.SNYK_ORG }}
+          token: ${{ secrets.SNYK_TOKEN }}
+          image-location: "$CLOUDBEES_WORKSPACE/image.tar"
+          image-tag: "pyexamples:${{ cloudbees.scm.sha }}"
       # Upload to ASPM
       # Gate it
       # Push it
