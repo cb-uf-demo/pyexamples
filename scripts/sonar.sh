@@ -10,6 +10,7 @@ fi
 # fi
 
 sonar-scanner \
+    '-Dsonar.qualitygate.wait=true' \
     '-Dsonar.exclusions=test_reports/output-snyk-*.json,test_reports/snyk-*-results.html,catalog-info.yaml' \
     '-Dsonar.coverage.exclusions=test_reports/output-snyk-*.json,test_reports/snyk-*-results.html,catalog-info.yaml' \
     -D "sonar.projectKey=$PROJECT_KEY" \
