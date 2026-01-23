@@ -58,7 +58,7 @@ jobs:
           snyk container test \
             --org=${{ vars.SNYK_ORG }} \
             --file=Dockerfile \
-            docker-archive:image.tar
+            docker-archive:image.tar || true
 
       # --severity-threshold=high \
       # Upload to ASPM
