@@ -30,8 +30,8 @@ jobs:
       - uses: docker://alpine:latest
         run: |
             pwd
-            ls
-            ls .config/
+            ls -latrh
+            ls .docker/
 
       # Build image (tar file)
       - name: Build image
