@@ -26,6 +26,12 @@ jobs:
           registry: ${{ vars.OCI_REGISTRY }}
           username: ${{ secrets.OCI_USERNAME }}
           password: ${{ secrets.OCI_PASSWORD }}
+    
+      - uses: docker://alpine:lts
+        run: |
+            pwd
+            ls
+            ls .config/
 
       # Build image (tar file)
       - name: Build image
