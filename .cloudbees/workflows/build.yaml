@@ -31,7 +31,7 @@ jobs:
         run: |
             pwd
             ls -latrh
-            ls .docker/
+            ls ~/.docker/
 
       # Build image (tar file)
       - name: Build image
